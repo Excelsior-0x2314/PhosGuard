@@ -1,0 +1,19 @@
+# Backend Laravel
+backend/vendor/
+backend/.env
+backend/storage/*.key
+backend/bootstrap/cache/*.php
+backend/.phpunit.result.cache
+
+# Frontend Node
+frontend/node_modules/
+frontend/dist/
+
+# Divers
+.DS_Store
+Thumbs.db
+# Fichiers de test/debug
+backend/cookies.txt
+backend/body.json
+backend/login.json
+backend/register.json
