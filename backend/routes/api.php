@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\EquipementController;
 use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\DashboardController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/roles', [RoleController::class, 'index']);
@@ -42,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::put('/users/{user}', [UserController::class, 'update']);
+    Route::get('/dashboard', [DashboardController::class, 'index']);
 });
 
 Route::prefix('auth')->group(function () {
