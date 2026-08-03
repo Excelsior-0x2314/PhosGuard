@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\EquipementController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\VisiteMaintenanceController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/roles', [RoleController::class, 'index']);
@@ -24,6 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/tickets/{ticket}', [TicketController::class, 'show']);
         Route::post('/tickets', [TicketController::class, 'store']);
         Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus']);
+        Route::get('/visites', [VisiteMaintenanceController::class, 'index']);
+        Route::get('/visites/{visite}', [VisiteMaintenanceController::class, 'show']);
+        Route::patch('/visites/{visite}/complete', [VisiteMaintenanceController::class, 'complete']);
     });
 
     Route::middleware('role:admin')->group(function () {
@@ -39,6 +43,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/users', [UserController::class, 'index']);
         Route::patch('/tickets/{ticket}/assign', [TicketController::class, 'assign']);
         Route::delete('/tickets/{ticket}', [TicketController::class, 'destroy']);
+        Route::post('/visites', [VisiteMaintenanceController::class, 'store']);
+        Route::patch('/visites/{visite}/assign', [VisiteMaintenanceController::class, 'assign']);
+        Route::patch('/visites/{visite}/cancel', [VisiteMaintenanceController::class, 'cancel']);
+        Route::delete('/visites/{visite}', [VisiteMaintenanceController::class, 'destroy']);
     });
 
     Route::get('/users/{user}', [UserController::class, 'show']);

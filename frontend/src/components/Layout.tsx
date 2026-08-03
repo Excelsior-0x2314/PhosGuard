@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
 
-export type Page = "dashboard" | "equipements" | "tickets" | "users"
+export type Page = "dashboard" | "equipements" | "tickets" | "maintenance" | "users"
 
 interface LayoutProps {
   children: ReactNode
@@ -13,10 +13,11 @@ interface LayoutProps {
 export function Layout({ children, currentPage, onNavigate }: LayoutProps) {
   const { user, logout } = useAuth()
 
-  const navItems: { key: Page; label: string; adminOnly?: boolean }[] = [
+ const navItems: { key: Page; label: string; adminOnly?: boolean }[] = [
     { key: "dashboard", label: "Dashboard" },
     { key: "equipements", label: "Équipements" },
     { key: "tickets", label: "Tickets" },
+    { key: "maintenance", label: "Maintenance" },
     { key: "users", label: "Utilisateurs", adminOnly: true },
   ]
 
