@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\EquipementController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\VisiteMaintenanceController;
+use App\Http\Controllers\Api\PieceRechangeController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/roles', [RoleController::class, 'index']);
@@ -28,6 +29,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/visites', [VisiteMaintenanceController::class, 'index']);
         Route::get('/visites/{visite}', [VisiteMaintenanceController::class, 'show']);
         Route::patch('/visites/{visite}/complete', [VisiteMaintenanceController::class, 'complete']);
+        Route::get('/pieces', [PieceRechangeController::class, 'index']);
+        Route::get('/pieces/{piece}', [PieceRechangeController::class, 'show']);
+        Route::get('/pieces/{piece}/mouvements', [PieceRechangeController::class, 'mouvements']);
+        Route::post('/tickets/{ticket}/consume-pieces', [TicketController::class, 'consumePieces']);
     });
 
     Route::middleware('role:admin')->group(function () {
@@ -37,6 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/equipements', [EquipementController::class, 'store']);
         Route::put('/equipements/{equipement}', [EquipementController::class, 'update']);
         Route::delete('/equipements/{equipement}', [EquipementController::class, 'destroy']);
+        Route::post('/pieces', [PieceRechangeController::class, 'store']);
+        Route::put('/pieces/{piece}', [PieceRechangeController::class, 'update']);
+        Route::delete('/pieces/{piece}', [PieceRechangeController::class, 'destroy']);
+        Route::post('/pieces/{piece}/mouvement', [PieceRechangeController::class, 'mouvement']);
     });
 
     Route::middleware('role:admin,responsable')->group(function () {

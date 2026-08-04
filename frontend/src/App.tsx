@@ -7,6 +7,7 @@ import { TicketsPage } from "@/pages/TicketsPage"
 import { UsersPage } from "@/pages/UsersPage"
 import { Layout, type Page } from "@/components/Layout"
 import { MaintenancePage } from "@/pages/MaintenancePage"
+import { PiecesPage } from "@/pages/PiecesPage"
 
 function App() {
   const { user, isLoading } = useAuth()
@@ -31,6 +32,7 @@ function App() {
       {currentPage === "tickets" && <TicketsPage />}
       {currentPage === "users" && <UsersPage />}
       {currentPage === "maintenance" && <MaintenancePage />}
+      {currentPage === "pieces" && <PiecesPage />}
     </Layout>
   )
 }

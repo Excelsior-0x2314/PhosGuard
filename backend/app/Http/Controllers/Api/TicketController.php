@@ -11,11 +11,15 @@ use App\Models\Ticket;
 use App\Services\TicketService;
 use Illuminate\Http\Request;
 use App\Enums\UserRole;
+use App\Http\Requests\ConsumePiecesRequest;
+use App\Services\PieceRechangeService;
 
 class TicketController extends Controller
 {
-    public function __construct(private TicketService $ticketService)
-    {
+      public function __construct(
+        private TicketService $ticketService,
+        private PieceRechangeService $pieceService
+    ) {
     }
 
     public function index(Request $request)
@@ -59,6 +63,26 @@ class TicketController extends Controller
         $updatedTicket = $this->ticketService->updateStatus($ticket, $request->validated()['statut']);
 
         return new TicketResource($updatedTicket);
+    }
+    public function consumePieces(ConsumePiecesRequest $request, Ticket $ticket)
+    {
+        $currentUser = $request->user();
+        $isAdminOrResponsable = in_array($currentUser->role, [UserRole::Admin, UserRole::Responsable], true);
+        $isAssignedTechnicien = $ticket->technicien_id === $currentUser->id;
+
+        if (! $isAdminOrResponsable && ! $isAssignedTechnicien) {
+            return response()->json(['message' => 'Accès refusé.'], 403);
+        }
+
+        try {
+            $this->pieceService->consumeForTicket($request->validated()['pieces'], $ticket->id, $currentUser->id);
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Pièce introuvable.'], 404);
+        }
+
+        return response()->json(['message' => 'Pièces consommées avec succès.']);
     }
     public function destroy(Ticket $ticket)
     {

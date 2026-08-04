@@ -2,8 +2,7 @@ import type { ReactNode } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
 
-export type Page = "dashboard" | "equipements" | "tickets" | "maintenance" | "users"
-
+export type Page = "dashboard" | "equipements" | "tickets" | "maintenance" | "pieces" | "users"
 interface LayoutProps {
   children: ReactNode
   currentPage: Page
@@ -18,6 +17,7 @@ export function Layout({ children, currentPage, onNavigate }: LayoutProps) {
     { key: "equipements", label: "Équipements" },
     { key: "tickets", label: "Tickets" },
     { key: "maintenance", label: "Maintenance" },
+    { key: "pieces", label: "Pièces de rechange" },
     { key: "users", label: "Utilisateurs", adminOnly: true },
   ]
 

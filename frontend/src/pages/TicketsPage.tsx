@@ -49,6 +49,13 @@ interface UserOption {
   role: string
 }
 
+interface PieceOption {
+  id: number
+  nom: string
+  reference: string
+  quantite: number
+}
+
 const statutVariant: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
   ouvert: "outline",
   en_cours: "secondary",
@@ -92,11 +99,18 @@ export function TicketsPage() {
   const [manageError, setManageError] = useState("")
   const [isManageSubmitting, setIsManageSubmitting] = useState(false)
 
+  const [piecesOptions, setPiecesOptions] = useState<PieceOption[]>([])
+  const [consumePieceId, setConsumePieceId] = useState("")
+  const [consumeQuantite, setConsumeQuantite] = useState("1")
+  const [consumeError, setConsumeError] = useState("")
+  const [consumeSuccess, setConsumeSuccess] = useState("")
+
   const isAdminOrResponsable = user?.role === "admin" || user?.role === "responsable"
 
   useEffect(() => {
     loadTickets()
     loadEquipementsOptions()
+    loadPiecesOptions()
     if (isAdminOrResponsable) {
       loadTechniciensOptions()
     }
@@ -131,6 +145,14 @@ export function TicketsPage() {
     if (response.ok) {
       const data = await response.json()
       setTechniciensOptions(data.data.filter((u: UserOption) => u.role === "technicien"))
+    }
+  }
+
+  async function loadPiecesOptions() {
+    const response = await apiFetch("/api/pieces")
+    if (response.ok) {
+      const data = await response.json()
+      setPiecesOptions(data.data)
     }
   }
 
@@ -171,6 +193,8 @@ export function TicketsPage() {
     )
     setManageStatut(ticket.statut)
     setManageError("")
+    setConsumeError("")
+    setConsumeSuccess("")
   }
 
   function canChangeStatus(ticket: Ticket): boolean {
@@ -221,6 +245,30 @@ export function TicketsPage() {
     setManageTicket(null)
     loadTickets()
     setIsManageSubmitting(false)
+  }
+
+  async function handleConsumePieces() {
+    if (!manageTicket || !consumePieceId) return
+
+    setConsumeError("")
+    setConsumeSuccess("")
+
+    const response = await apiFetch(`/api/tickets/${manageTicket.id}/consume-pieces`, {
+      method: "POST",
+      body: JSON.stringify({
+        pieces: [{ piece_id: Number(consumePieceId), quantite: Number(consumeQuantite) }],
+      }),
+    })
+
+    if (response.ok) {
+      setConsumeSuccess("Pièce consommée avec succès.")
+      setConsumePieceId("")
+      setConsumeQuantite("1")
+      loadPiecesOptions()
+    } else {
+      const data = await response.json()
+      setConsumeError(data.message || "Erreur lors de la consommation.")
+    }
   }
 
   return (
@@ -382,6 +430,38 @@ export function TicketsPage() {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+              )}
+
+              {canChangeStatus(manageTicket) && (
+                <div className="flex flex-col gap-2 border-t pt-4">
+                  <Label>Consommer une pièce</Label>
+                  <div className="flex gap-2">
+                    <Select value={consumePieceId} onValueChange={setConsumePieceId}>
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Choisir une pièce" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {piecesOptions.map((p) => (
+                          <SelectItem key={p.id} value={String(p.id)}>
+                            {p.nom} (stock: {p.quantite})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={consumeQuantite}
+                      onChange={(e) => setConsumeQuantite(e.target.value)}
+                      className="w-20"
+                    />
+                    <Button type="button" size="sm" onClick={handleConsumePieces} disabled={!consumePieceId}>
+                      Consommer
+                    </Button>
+                  </div>
+                  {consumeError && <p className="text-sm text-red-600">{consumeError}</p>}
+                  {consumeSuccess && <p className="text-sm text-green-600">{consumeSuccess}</p>}
                 </div>
               )}
 
