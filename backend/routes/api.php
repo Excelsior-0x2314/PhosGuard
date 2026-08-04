@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\VisiteMaintenanceController;
 use App\Http\Controllers\Api\PieceRechangeController;
+use App\Http\Controllers\Api\RapportController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/roles', [RoleController::class, 'index']);
@@ -56,6 +57,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/visites/{visite}/assign', [VisiteMaintenanceController::class, 'assign']);
         Route::patch('/visites/{visite}/cancel', [VisiteMaintenanceController::class, 'cancel']);
         Route::delete('/visites/{visite}', [VisiteMaintenanceController::class, 'destroy']);
+        Route::get('/rapports/tickets', [RapportController::class, 'tickets']);
+        Route::get('/rapports/equipements', [RapportController::class, 'equipements']);
     });
 
     Route::get('/users/{user}', [UserController::class, 'show']);
