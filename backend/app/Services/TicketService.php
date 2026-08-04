@@ -11,6 +11,10 @@ use Illuminate\Support\Carbon;
 
 class TicketService
 {
+    public function __construct(private NotificationService $notificationService)
+    {
+    }
+
     public function list(Request $request): LengthAwarePaginator
     {
         $query = Ticket::query()->with(['equipement', 'technicien', 'creator']);
@@ -44,21 +48,35 @@ class TicketService
         $data['created_by'] = $creatorId;
 
         $ticket = Ticket::create($data);
+        $ticket = $ticket->fresh(['equipement', 'technicien', 'creator']);
 
-        return $ticket->fresh(['equipement', 'technicien', 'creator']);
+        $this->notificationService->notifyAllRoles(
+            'ticket_cree',
+            'Nouveau ticket créé : ' . $ticket->titre,
+            '/tickets/' . $ticket->id
+        );
+
+        return $ticket;
     }
 
     public function assign(Ticket $ticket, int $technicienId): Ticket
     {
         $ticket->update(['technicien_id' => $technicienId]);
+        $ticket = $ticket->fresh(['equipement', 'technicien', 'creator']);
 
-        return $ticket->fresh(['equipement', 'technicien', 'creator']);
+        $this->notificationService->notifyUser(
+            $technicienId,
+            'ticket_assigne',
+            'Vous avez été assigné au ticket : ' . $ticket->titre,
+            '/tickets/' . $ticket->id
+        );
+
+        return $ticket;
     }
 
     public function updateStatus(Ticket $ticket, string $newStatutValue): Ticket
     {
         $newStatut = TicketStatut::from($newStatutValue);
-
         $data = ['statut' => $newStatut];
 
         if ($newStatut === TicketStatut::EnCours && ! $ticket->date_prise_en_charge) {
@@ -73,6 +91,7 @@ class TicketService
 
         return $ticket->fresh(['equipement', 'technicien', 'creator']);
     }
+
     public function delete(Ticket $ticket): void
     {
         $ticket->delete();

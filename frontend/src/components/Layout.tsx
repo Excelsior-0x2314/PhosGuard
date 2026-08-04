@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/components/ui/button"
+import { NotificationBell } from "@/components/NotificationBell"
 
 export type Page = "dashboard" | "equipements" | "tickets" | "maintenance" | "pieces" | "rapports" | "users"
 interface LayoutProps {
@@ -56,7 +57,12 @@ export function Layout({ children, currentPage, onNavigate }: LayoutProps) {
         </div>
       </aside>
 
-      <main className="flex-1 p-8">{children}</main>
+     <main className="flex-1 p-8">
+        <div className="mb-4 flex justify-end">
+          <NotificationBell />
+        </div>
+        {children}
+      </main>
     </div>
   )
 }

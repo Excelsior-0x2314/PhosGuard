@@ -2,12 +2,17 @@
 
 namespace App\Services;
 
+use App\Enums\UserRole;
 use App\Models\PieceRechange;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class PieceRechangeService
 {
+    public function __construct(private NotificationService $notificationService)
+    {
+    }
+
     public function list(Request $request): LengthAwarePaginator
     {
         $query = PieceRechange::query();
@@ -61,6 +66,8 @@ class PieceRechangeService
             throw new \RuntimeException('Stock insuffisant pour cette sortie.');
         }
 
+        $etaitAuDessusDuSeuil = $piece->quantite > $piece->seuil_minimum;
+
         $nouvelleQuantite = $type === 'entree'
             ? $piece->quantite + $quantite
             : $piece->quantite - $quantite;
@@ -75,7 +82,18 @@ class PieceRechangeService
             'motif' => $motif,
         ]);
 
-        return $piece->fresh();
+        $piece = $piece->fresh();
+
+        if ($etaitAuDessusDuSeuil && $piece->quantite <= $piece->seuil_minimum) {
+            $this->notificationService->notifyRoles(
+                [UserRole::Admin, UserRole::Responsable],
+                'stock_bas',
+                'Stock bas sur la pièce : ' . $piece->nom . ' (' . $piece->quantite . ' restant, seuil ' . $piece->seuil_minimum . ')',
+                '/pieces/' . $piece->id
+            );
+        }
+
+        return $piece;
     }
 
     public function listMouvements(PieceRechange $piece)

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\VisiteMaintenanceController;
 use App\Http\Controllers\Api\PieceRechangeController;
 use App\Http\Controllers\Api\RapportController;
+use App\Http\Controllers\Api\NotificationController;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/roles', [RoleController::class, 'index']);
@@ -34,6 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/pieces/{piece}', [PieceRechangeController::class, 'show']);
         Route::get('/pieces/{piece}/mouvements', [PieceRechangeController::class, 'mouvements']);
         Route::post('/tickets/{ticket}/consume-pieces', [TicketController::class, 'consumePieces']);
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
+        Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     });
 
     Route::middleware('role:admin')->group(function () {
