@@ -1,7 +1,5 @@
 <p align="center">
-  <img src="./frontend/public/logos/logo-phosguard.png" alt="PhosGuard Logo" width="220" />
-  &nbsp;&nbsp;&nbsp;
-  <img src="./frontend/public/logos/logo-ocp.png" alt="OCP Logo" width="180" />
+  <img src="./frontend/public/logos/logo-phosguard.png" alt="PhosGuard Logo" width="260" />
 </p>
 
 <p align="center">⚙️ PhosGuard</p>
