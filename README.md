@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="./frontend/public/logos/logo-phosguard.png" alt="PhosGuard Logo" width="220" />
+  &nbsp;&nbsp;&nbsp;
+  <img src="./frontend/public/logos/logo-ocp.png" alt="OCP Logo" width="180" />
+</p>
+
 <p align="center">⚙️ PhosGuard</p>
 
 ### <p align="center"><b>Application de Gestion de Maintenance Industrielle</b></p>
