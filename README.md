@@ -167,7 +167,6 @@ php artisan migrate
 php artisan serve
 ```
 
-L'API est accessible sur **`http://localhost:8000`**.
 
 ### 3. Configurer le Frontend
 ```bash
