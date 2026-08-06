@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { apiFetch } from "@/lib/api"
+import { FileText, Download } from "lucide-react"
 
 export function RapportsPage() {
   const [isDownloadingTickets, setIsDownloadingTickets] = useState(false)
@@ -30,7 +31,15 @@ export function RapportsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">Rapports</h1>
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+          <FileText className="h-5 w-5" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Rapports</h1>
+          <p className="text-sm text-muted-foreground">Génération de documents PDF.</p>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="rounded-lg bg-white p-6 shadow">

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ticket;
+use App\Models\VisiteMaintenance;
 use App\Services\RapportService;
 
 class RapportController extends Controller
@@ -23,5 +25,19 @@ class RapportController extends Controller
         $pdf = $this->rapportService->genererRapportEquipements();
 
         return $pdf->download('rapport-equipements-' . now()->format('Y-m-d') . '.pdf');
+    }
+
+    public function ficheTicket(Ticket $ticket)
+    {
+        $pdf = $this->rapportService->genererFicheTicket($ticket);
+
+        return $pdf->download('fiche-ticket-' . $ticket->id . '.pdf');
+    }
+
+    public function ficheVisite(VisiteMaintenance $visite)
+    {
+        $pdf = $this->rapportService->genererFicheVisite($visite);
+
+        return $pdf->download('fiche-visite-' . $visite->id . '.pdf');
     }
 }

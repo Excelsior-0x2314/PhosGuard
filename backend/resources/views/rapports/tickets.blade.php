@@ -3,19 +3,39 @@
 <head>
     <meta charset="utf-8">
     <style>
-        body { font-family: sans-serif; font-size: 12px; }
-        h1 { font-size: 18px; margin-bottom: 4px; }
-        p.subtitle { color: #666; margin-top: 0; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
-        th { background-color: #f1f5f9; }
+        body { font-family: sans-serif; font-size: 11px; color: #1a1a1a; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #1e5f8a; padding-bottom: 10px; margin-bottom: 6px; }
+        .header img { height: 45px; }
+        .header .titles { text-align: center; }
+        .header h1 { font-size: 17px; margin: 0; }
+        .header .subtitle { font-size: 10px; color: #666; margin-top: 3px; }
+        table.data { width: 100%; border-collapse: collapse; margin-top: 14px; }
+        table.data th { background: #1e5f8a; color: white; padding: 7px 8px; text-align: left; font-size: 10px; }
+        table.data td { border-bottom: 1px solid #e2e8f0; padding: 6px 8px; font-size: 10px; }
+        table.data tr:nth-child(even) { background: #f8fafc; }
+        .badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 9px; font-weight: bold; }
+        .badge-ouvert { background: #fef3c7; color: #92400e; }
+        .badge-en_cours { background: #dbeafe; color: #1e40af; }
+        .badge-resolu { background: #d1fae5; color: #065f46; }
+        .badge-ferme { background: #e5e7eb; color: #374151; }
+        .badge-basse { background: #e5e7eb; color: #374151; }
+        .badge-moyenne { background: #dbeafe; color: #1e40af; }
+        .badge-haute { background: #fed7aa; color: #9a3412; }
+        .badge-critique { background: #fecaca; color: #991b1b; }
+        .footer { margin-top: 16px; font-size: 9px; color: #888; text-align: center; }
     </style>
 </head>
 <body>
-    <h1>Rapport des Tickets — PhosGuard</h1>
-    <p class="subtitle">Généré le {{ $dateGeneration }} — {{ count($tickets) }} ticket(s)</p>
+    <div class="header">
+        <img src="{{ public_path('logos/logo-ocp.png') }}" alt="OCP">
+        <div class="titles">
+            <h1>RAPPORT DES TICKETS</h1>
+            <p class="subtitle">{{ count($tickets) }} ticket(s) — généré le {{ $dateGeneration }}</p>
+        </div>
+        <img src="{{ public_path('logos/logo-phosguard.png') }}" alt="PhosGuard" style="height: 50px;">
+    </div>
 
-    <table>
+    <table class="data">
         <thead>
             <tr>
                 <th>Titre</th>
@@ -32,12 +52,14 @@
                     <td>{{ $ticket->titre }}</td>
                     <td>{{ $ticket->equipement->nom ?? '—' }}</td>
                     <td>{{ $ticket->technicien->name ?? 'Non assigné' }}</td>
-                    <td>{{ $ticket->priorite->label() }}</td>
-                    <td>{{ $ticket->statut->label() }}</td>
+                    <td><span class="badge badge-{{ $ticket->priorite->value }}">{{ $ticket->priorite->label() }}</span></td>
+                    <td><span class="badge badge-{{ $ticket->statut->value }}">{{ $ticket->statut->label() }}</span></td>
                     <td>{{ $ticket->created_at->format('d/m/Y') }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+
+    <p class="footer">Document généré automatiquement par PhosGuard — Office Chérifien des Phosphates</p>
 </body>
 </html>

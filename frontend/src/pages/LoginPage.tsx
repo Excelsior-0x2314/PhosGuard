@@ -64,7 +64,7 @@ export function LoginPage() {
       <div className="flex w-full flex-col items-center justify-center bg-background px-6 lg:w-1/2">
         <div className="w-full max-w-sm">
           <div className="mb-8 flex flex-col items-center text-center">
-            <img src="/logos/logo-phosguard.png" alt="PhosGuard" className="mb-1 h-80 w-80 object-contain" />
+            <img src="/logos/logo-phosguard.png" alt="PhosGuard" className="mb-1 h-60 w-60 object-contain" />
             <h2 className="text-xl font-bold text-foreground">PhosGuard</h2>
             <p className="text-sm text-muted-foreground">Maintenance · Sûreté · Performance</p>
           </div>

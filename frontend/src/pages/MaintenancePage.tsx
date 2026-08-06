@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { CalendarClock, Plus } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -232,12 +233,20 @@ export function MaintenancePage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Maintenance préventive</h1>
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+            <CalendarClock className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Maintenance préventive</h1>
+            <p className="text-sm text-muted-foreground">Planification et suivi des visites récurrentes.</p>
+          </div>
+        </div>
 
         {isAdminOrResponsable && (
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button>Planifier une visite</Button>
+              <Button className="gap-2"><Plus className="h-4 w-4" />Planifier une visite</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

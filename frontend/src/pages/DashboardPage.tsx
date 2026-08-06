@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { apiFetch } from "@/lib/api"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts"
+import { LayoutGrid, Wrench, Ticket, CircleAlert, CircleCheck, AlertTriangle } from "lucide-react"
 
 interface DashboardStats {
   nombre_equipements: number
@@ -28,13 +29,33 @@ const prioriteLabels: Record<string, string> = {
 
 const COLORS = ["#3b82f6", "#f59e0b", "#10b981", "#64748b", "#ef4444"]
 
-function StatCard({ label, value, highlight }: { label: string; value: number; highlight?: boolean }) {
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  tone = "default",
+}: {
+  label: string
+  value: number | string
+  icon: React.ElementType
+  tone?: "default" | "warning" | "success" | "danger"
+}) {
+  const toneStyles = {
+    default: "bg-accent text-accent-foreground",
+    warning: "bg-amber-100 text-amber-700",
+    success: "bg-emerald-100 text-emerald-700",
+    danger: "bg-red-100 text-red-700",
+  }
+
   return (
-    <div className="rounded-lg bg-white p-6 shadow">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className={`mt-2 text-3xl font-bold ${highlight ? "text-red-600" : "text-slate-900"}`}>
-        {value}
-      </p>
+    <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+        <div className={`flex h-8 w-8 items-center justify-center rounded-md ${toneStyles[tone]}`}>
+          <Icon className="h-4 w-4" />
+        </div>
+      </div>
+      <p className="text-3xl font-bold text-foreground">{value}</p>
     </div>
   )
 }
@@ -64,7 +85,7 @@ export function DashboardPage() {
     setIsLoading(false)
   }
 
-  if (isLoading) return <p className="text-slate-500">Chargement...</p>
+  if (isLoading) return <p className="text-muted-foreground">Chargement...</p>
   if (error) return <p className="text-red-600">{error}</p>
   if (!stats) return null
 
@@ -80,19 +101,32 @@ export function DashboardPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">Dashboard</h1>
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+          <LayoutGrid className="h-5 w-5" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Tableau de bord</h1>
+          <p className="text-sm text-muted-foreground">Statistiques de maintenance curative et préventive en temps réel.</p>
+        </div>
+      </div>
 
       <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-5">
-        <StatCard label="Équipements" value={stats.nombre_equipements} />
-        <StatCard label="Total tickets" value={stats.nombre_tickets} />
-        <StatCard label="Tickets ouverts" value={stats.tickets_ouverts} />
-        <StatCard label="Tickets fermés" value={stats.tickets_fermes} />
-        <StatCard label="En retard" value={stats.tickets_en_retard} highlight={stats.tickets_en_retard > 0} />
+        <StatCard label="Équipements" value={stats.nombre_equipements} icon={Wrench} />
+        <StatCard label="Total tickets" value={stats.nombre_tickets} icon={Ticket} />
+        <StatCard label="Tickets ouverts" value={stats.tickets_ouverts} icon={CircleAlert} tone="warning" />
+        <StatCard label="Tickets fermés" value={stats.tickets_fermes} icon={CircleCheck} tone="success" />
+        <StatCard
+          label="En retard"
+          value={stats.tickets_en_retard}
+          icon={AlertTriangle}
+          tone={stats.tickets_en_retard > 0 ? "danger" : "default"}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Répartition par statut</h2>
+        <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-foreground">Répartition par statut</h2>
           {statutData.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
@@ -106,12 +140,12 @@ export function DashboardPage() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-sm text-slate-400">Aucun ticket pour le moment.</p>
+            <p className="text-sm text-muted-foreground">Aucun ticket pour le moment.</p>
           )}
         </div>
 
-        <div className="rounded-lg bg-white p-6 shadow">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Répartition par priorité</h2>
+        <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-foreground">Répartition par priorité</h2>
           {prioriteData.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
@@ -125,7 +159,7 @@ export function DashboardPage() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-sm text-slate-400">Aucun ticket pour le moment.</p>
+            <p className="text-sm text-muted-foreground">Aucun ticket pour le moment.</p>
           )}
         </div>
       </div>

@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Users, Plus } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -184,11 +185,19 @@ export function UsersPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Utilisateurs</h1>
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+            <Users className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Utilisateurs</h1>
+            <p className="text-sm text-muted-foreground">Gestion des comptes et des rôles.</p>
+          </div>
+        </div>
 
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button>Nouvel utilisateur</Button>
+            <Button className="gap-2"><Plus className="h-4 w-4" />Nouvel utilisateur</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>

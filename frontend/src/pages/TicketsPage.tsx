@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Ticket as TicketIcon, Plus, Settings2 } from "lucide-react"
 
 interface Ticket {
   id: number
@@ -271,14 +272,45 @@ export function TicketsPage() {
     }
   }
 
+  async function handleDownloadFiche() {
+    if (!manageTicket) return
+
+    const response = await apiFetch(`/api/tickets/${manageTicket.id}/fiche`)
+
+    if (response.ok) {
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `fiche-ticket-${manageTicket.id}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } else {
+      alert("Erreur lors de la génération de la fiche.")
+    }
+  }
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Tickets</h1>
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+            <TicketIcon className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Gestion des Tickets</h1>
+            <p className="text-sm text-muted-foreground">Suivi des interventions curatives et incidents.</p>
+          </div>
+        </div>
 
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button>Nouveau ticket</Button>
+            <Button className="gap-2">
+              <Plus className="h-4 w-4" />
+              Nouveau ticket
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -337,11 +369,11 @@ export function TicketsPage() {
         </Dialog>
       </div>
 
-      {isLoading && <p className="text-slate-500">Chargement...</p>}
+      {isLoading && <p className="text-muted-foreground">Chargement...</p>}
       {error && <p className="text-red-600">{error}</p>}
 
       {!isLoading && !error && (
-        <div className="rounded-lg bg-white shadow">
+        <div className="rounded-lg bg-card shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
@@ -375,7 +407,8 @@ export function TicketsPage() {
                   </TableCell>
                   <TableCell>
                     {(isAdminOrResponsable || canChangeStatus(ticket)) && (
-                      <Button size="sm" variant="outline" onClick={() => openManageDialog(ticket)}>
+                      <Button size="sm" variant="outline" className="gap-1.5" onClick={() => openManageDialog(ticket)}>
+                        <Settings2 className="h-3.5 w-3.5" />
                         Gérer
                       </Button>
                     )}
@@ -396,6 +429,10 @@ export function TicketsPage() {
           {manageTicket && (
             <form onSubmit={handleManageSubmit} className="flex flex-col gap-4">
               <p className="text-sm font-medium text-slate-700">{manageTicket.titre}</p>
+
+              <Button type="button" variant="outline" size="sm" onClick={handleDownloadFiche}>
+                📄 Télécharger la fiche PDF
+              </Button>
 
               {isAdminOrResponsable && (
                 <div className="flex flex-col gap-2">

@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/notifications', [NotificationController::class, 'index']);
         Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
         Route::patch('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+        Route::get('/tickets/{ticket}/fiche', [RapportController::class, 'ficheTicket']);
+        Route::get('/visites/{visite}/fiche', [RapportController::class, 'ficheVisite']);
     });
 
     Route::middleware('role:admin')->group(function () {

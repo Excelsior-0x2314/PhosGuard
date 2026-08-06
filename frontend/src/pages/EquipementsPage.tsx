@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Wrench, Plus, Pencil, Trash2, MapPin } from "lucide-react"
 
 interface Equipement {
   id: number
@@ -156,12 +157,23 @@ export function EquipementsPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Équipements</h1>
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+            <Wrench className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Gestion des Équipements</h1>
+            <p className="text-sm text-muted-foreground">Consultez et gérez tous les équipements enregistrés dans le système.</p>
+          </div>
+        </div>
 
         {canManage && (
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button>Nouvel équipement</Button>
+              <Button className="gap-2">
+                <Plus className="h-4 w-4" />
+                Nouvel équipement
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -195,11 +207,11 @@ export function EquipementsPage() {
         )}
       </div>
 
-      {isLoading && <p className="text-slate-500">Chargement...</p>}
+      {isLoading && <p className="text-muted-foreground">Chargement...</p>}
       {error && <p className="text-red-600">{error}</p>}
 
       {!isLoading && !error && (
-        <div className="rounded-lg bg-white shadow">
+        <div className="rounded-lg bg-card shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
@@ -213,21 +225,33 @@ export function EquipementsPage() {
             <TableBody>
               {equipements.map((eq) => (
                 <TableRow key={eq.id}>
-                  <TableCell>{eq.nom}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Wrench className="h-4 w-4 text-muted-foreground" />
+                      {eq.nom}
+                    </div>
+                  </TableCell>
                   <TableCell>{eq.reference}</TableCell>
-                  <TableCell>{eq.localisation}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {eq.localisation}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Badge variant={eq.statut === "fonctionnel" ? "default" : "destructive"}>
-                      {eq.statut_label}
+                      {eq.statut === "fonctionnel" ? "● " : "● "}{eq.statut_label}
                     </Badge>
                   </TableCell>
                   {canManage && (
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline" onClick={() => openEditDialog(eq)}>
+                        <Button size="sm" variant="outline" className="gap-1.5" onClick={() => openEditDialog(eq)}>
+                          <Pencil className="h-3.5 w-3.5" />
                           Modifier
                         </Button>
-                        <Button size="sm" variant="destructive" onClick={() => handleDelete(eq)}>
+                        <Button size="sm" variant="destructive" className="gap-1.5" onClick={() => handleDelete(eq)}>
+                          <Trash2 className="h-3.5 w-3.5" />
                           Supprimer
                         </Button>
                       </div>

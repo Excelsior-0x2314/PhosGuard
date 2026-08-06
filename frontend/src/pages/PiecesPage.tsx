@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Package, Plus, AlertTriangle } from "lucide-react"
 import {
   Select,
   SelectContent,
@@ -158,12 +159,20 @@ export function PiecesPage() {
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Pièces de rechange</h1>
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+            <Package className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Pièces de rechange</h1>
+            <p className="text-sm text-muted-foreground">Inventaire et mouvements de stock.</p>
+          </div>
+        </div>
 
         {isAdmin && (
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button>Nouvelle pièce</Button>
+              <Button className="gap-2"><Plus className="h-4 w-4" />Nouvelle pièce</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -229,7 +238,7 @@ export function PiecesPage() {
                   <TableCell>{piece.quantite}</TableCell>
                   <TableCell>{piece.seuil_minimum}</TableCell>
                   <TableCell>
-                    {piece.alerte_stock_bas && <Badge variant="destructive">Stock bas</Badge>}
+                    {piece.alerte_stock_bas && <Badge variant="destructive" className="gap-1"><AlertTriangle className="h-3 w-3" />Stock bas</Badge>}
                   </TableCell>
                   {isAdmin && (
                     <TableCell>

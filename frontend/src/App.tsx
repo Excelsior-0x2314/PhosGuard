@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { LoginPage } from "@/pages/LoginPage"
+import { ResetPasswordPage } from "@/pages/ResetPasswordPage"
 import { DashboardPage } from "@/pages/DashboardPage"
 import { EquipementsPage } from "@/pages/EquipementsPage"
 import { TicketsPage } from "@/pages/TicketsPage"
@@ -13,6 +14,15 @@ import { RapportsPage } from "@/pages/RapportsPage"
 function App() {
   const { user, isLoading } = useAuth()
   const [currentPage, setCurrentPage] = useState<Page>("dashboard")
+
+  const urlParams = new URLSearchParams(window.location.search)
+  const isResetPasswordRoute = window.location.pathname === "/reset-password"
+  const resetToken = urlParams.get("token")
+  const resetEmail = urlParams.get("email")
+
+  if (isResetPasswordRoute && resetToken && resetEmail) {
+    return <ResetPasswordPage token={resetToken} email={resetEmail} />
+  }
 
   if (isLoading) {
     return (
